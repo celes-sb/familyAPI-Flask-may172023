@@ -35,8 +35,56 @@ def handle_hello():
         "family": members
     }
 
+    return jsonify(response_body), 200
+
+#agregar miembro de la familia
+@app.route('/members', methods=['POST'])
+def add_member():
+    body = request.get_json()
+
+    """{
+         "first_name": "Pedro",
+        "age": 45,
+        "lucky_numbers": [8, 7, 6]
+    }"""
+
+    if isinstance(body, dict):
+        jackson_family.add_member(body)
+        return jsonify("member added"), 200
+    else:
+        return jsonify("bad request"), 400
 
     return jsonify(response_body), 200
+
+#get miembro específico de la familia
+@app.route('/member/<int:member_id>', methods=['GET'])
+def get_member():
+    print("id miembro flia", member_id)
+    member = jackson_family.get_member(member_id)
+    if member:
+        return jsonify(member), 200
+    else:
+        return jsonify("Member doesn't exist"), 400
+
+#borrar miembro específico de la familia
+@app.route('/member/<int:member_id', methods=['DELETE'])
+def delete_member():
+    print("id miembro flia", member_id)
+    member = jackson_family.delete_member(id)(member_id)
+    if message:
+        return jsonify(member), 200
+    else:
+        return jsonify("Member doesn't exist"), 400
+
+@app.route('/member/<int:member_id', methods=['PUT'])
+def update_member(member_id):
+    body = request.get_json()
+    print("id miembro flia", member_id)
+    message = jackson_family.update(member_id, body)
+    if message:
+        return jsonify(message), 200
+    else:
+        return jsonify("Error updating"), 400
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
